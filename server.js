@@ -5,14 +5,43 @@ const todos = require('./todos');
 app.use(express.json());
 
 app.get('/todos', (req, res) => {
-  res.json(todos);
+  res.json(todos.getTodos());
 });
 
-// post 
+app.post('/todos', (req, res) => {
+  const { description, done } = req.body;
+  if (description === undefined || done === undefined) {
+    return res.status(400).json({ error: 'Description and done status are required' });
+  }
+  const todo = { description, done };
+  todos.addTodo(todo);
+  res.status(201).json(todo);
+});
 
-// put 
+app.put('/todos/:id', (req, res) => {
+  const { id } = req.params;
+  const { description, done } = req.body;
+  if (description === undefined || done === undefined) {
+    return res.status(400).json({ error: 'Description and done status are required' });
+  }
+  const updatedTodo = { description, done };
+  const result = todos.updateTodo(id, updatedTodo);
+  if (result) {
+    res.json(updatedTodo);
+  } else {
+    res.status(404).json({ error: 'Todo not found' });
+  }
+});
 
-// delete
+app.delete('/todos/:id', (req, res) => {
+  const { id } = req.params;
+  const result = todos.deleteTodo(id);
+  if (result) {
+    res.status(204).send("Ressource deleted");
+  } else {
+    res.status(404).json({ error: 'Todo not found' });
+  }
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

@@ -9,22 +9,22 @@ app.get('/todos', (req, res) => {
 });
 
 app.post('/todos', (req, res) => {
-  const { description, done } = req.body;
-  if (description === undefined || done === undefined) {
-    return res.status(400).json({ error: 'Description and done status are required' });
+  const { description, done, important} = req.body;
+  if (description === undefined || done === undefined || important=== undefined) {
+    return res.status(400).json({ error: 'Description, done and importance status are required' });
   }
-  const todo = { description, done };
+  const todo = { description, done, important };
   todos.addTodo(todo);
   res.status(201).json(todo);
 });
 
 app.put('/todos/:id', (req, res) => {
   const { id } = req.params;
-  const { description, done } = req.body;
-  if (description === undefined || done === undefined) {
-    return res.status(400).json({ error: 'Description and done status are required' });
+  const { description, done, important } = req.body;
+  if (description === undefined || done === undefined || important=== undefined) {
+    return res.status(400).json({ error: 'Description, done and importance status are required' });
   }
-  const updatedTodo = { description, done };
+  const updatedTodo = { description, done, important };
   const result = todos.updateTodo(id, updatedTodo);
   if (result) {
     res.json(updatedTodo);
